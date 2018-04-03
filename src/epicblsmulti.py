@@ -386,7 +386,7 @@ class EVERESTBLS(object):
             print("Error in plotting info")
 
         # Everest fold - for some reason this has to be at the end
-        self.plot_folded(dur=self.dur,ax=ax_lcoe)
+        #self.plot_folded(dur=self.dur,ax=ax_lcoe)
 
         # Saving figure
         pp = PdfPages(self.savename)
@@ -404,8 +404,8 @@ class EVERESTBLS(object):
         pp.close()
         print("Saved",self.savename)
     
-    def plot_folded(self,dur=0.2,ax=None):
-        self.star.plot_folded(self.planet._pl_tranmid-k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur,ax=ax)
+    def plot_folded(self,dur=0.2):
+        self.star.plot_folded(self.planet._pl_tranmid-k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur)
 
     def get_cutout_phased_df(self,t0=None,P=None,dur=0.2,sigma=None,plot=True,use_median_filter=True):
         """
