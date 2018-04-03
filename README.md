@@ -1,4 +1,5 @@
-# Diffuser-Assisted-K2-Followup
+#
+Diffuser-Assisted-K2-Followup
 Following up K2 targets with diffusers
 
 # Dependencies
@@ -9,6 +10,7 @@ Following up K2 targets with diffusers
 - bls: https://github.com/dfm/python-bls
 - forecaster: https://github.com/chenjj2/forecaster 
 - george: https://github.com/dfm/george
+- batman: https://github.com/lkreidberg/batman
 - emcee: 
 - corner: 
 - progressbar
