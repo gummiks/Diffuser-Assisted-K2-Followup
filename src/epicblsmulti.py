@@ -71,7 +71,7 @@ class EPICBLSMULTI(object):
         if plot:
             self.fig, self.ax = plt.subplots(nrows=4)
             self.bb.plot_power_spectrum(inverse=True,ax=self.ax.flat[0])
-            self.bb.plot_folded_panel=True,use_BLS_values=False,period_range=(1.,50.),period_fit_prior=None,t0_fit_prior=None,dur=0.2):
+            self.bb.plot_folded_panel=True,use_BLS_values=False,period_range=(1.,50.),period_fit_prior=None,t0_fit_prior=None,dur=0.2)
         self.EP(period_range=period_range,nf=10000,plot=plot_fit_panel,period_fit_prior=period_fit_prior,t0_fit_prior=t0_fit_prior,dur=dur)
         self.planet = self.EP.get_nexoplanet(epicname=self.epicname)
         #if plot_folded_panel:
