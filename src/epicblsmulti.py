@@ -14,7 +14,6 @@ import blsMOD
 import exoplanet_functions
 from matplotlib.gridspec import GridSpec
 
-#import astropylib.epicblsmulti
 import k2help
 import astropy
 import everest
@@ -71,13 +70,188 @@ class EPICBLSMULTI(object):
         if plot:
             self.fig, self.ax = plt.subplots(nrows=4)
             self.bb.plot_power_spectrum(inverse=True,ax=self.ax.flat[0])
-            self.bb.plot_folded_panel=True,use_BLS_values=False,period_range=(1.,50.),period_fit_prior=None,t0_fit_prior=None,dur=0.2)
+            self.bb.plot_folded(ax=self.ax.flat[1])
+            self.bb.plot_transits(ax=self.ax.flat[2])
+            
+            if self.time is not None:            
+                self.t_folded,self.f_folded = k2help.fold_transit_everest(self.t,self.f,t0=self.bb._epoch,period=self.bb._best_period,dur=dur)
+                self.ax.flat[3].plot(self.t_folded,self.f_folded,"k.",label="BLS",alpha=0.5)
+                self.t_folded,self.f_folded = k2help.fold_transit_everest(self.t,self.f,t0=self.pv_min[1],period=self.pv_min[0],dur=dur)
+                self.ax.flat[3].plot(self.t_folded,self.f_folded,"r.",label="Best Fit",markersize=5)
+                self.ax.flat[3].legend(loc="lower left",fontsize=8)
+            else:
+                self.t_folded,self.f_folded = self.star.get_folded_transit(t0=self.bb._epoch,period=self.bb._best_period,dur=dur,plot=False);
+                self.ax.flat[3].plot(self.t_folded,self.f_folded,"k.",label="BLS",alpha=0.5)
+                self.t_folded,self.f_folded = self.star.get_folded_transit(t0=self.pv_min[1],period=self.pv_min[0],dur=dur,plot=False);
+                self.ax.flat[3].plot(self.t_folded,self.f_folded,"r.",label="Best Fit",markersize=5)
+                self.ax.flat[3].legend(loc="lower left",fontsize=8)
+            
+    
+    def fit_transit(self,pv_init,time,flux,period_fit_prior=None,t0_fit_prior=None):
+        """
+        Fit folded transit
+        """
+        pbls = pv_init[0]
+        t0bls = pv_init[1]
+
+        self.tm = MA(supersampling=30., nthr=1) 
+        #self.time_fitting = self.t#self.df_folded.time
+        #self.flux_fitting = self.f#self.df_folded.flux
+
+        def minfun(pv):
+            if any(pv<=0) or (pv[3] <= 1) or (pv[4] > 1) or not (0.75<pv[0]<80.) or abs(pv[0]-pbls) > 0.1: return np.inf
+            if period_fit_prior is not None:
+                if (pv[0] < period_fit_prior[0]) or (pv[0] > period_fit_prior[1]):
+                    return np.inf
+            if t0_fit_prior is not None:
+                if (pv[1] < t0_fit_prior[0]) or (pv[1] > t0_fit_prior[1]):
+                    return np.inf
+            elif abs(pv[1]-t0bls) > 0.4: return np.inf
+            return -ll_normal_ev_py(flux, self.transit_model(pv,time), 1e-5)
+        
+        self.mr = minimize(minfun, pv_init, method='Nelder-Mead')
+        mr = self.mr
+        #mr = minimize(minfun, self.pv_bls, method='powell')
+        self.pv_min = self.mr.x
+        print(mr.message)
+        lnlike, x = -mr.fun, mr.x
+
+    def mask_planet(self,planet=None,P=None,T0=None,dur=0.2):
+        print("Masking planet with:")
+        if planet is not None:
+            print("Using planet",planet._pl_name,"to mask")
+            P = planet._pl_orbper
+            T0 = planet._pl_tranmid-k2help.KEPLER_JD_OFFSET
+        print("T0=",T0)
+        print("P=",P)
+        self.mask = k2help.mask_planet_everest(self.t,T0,P,dur=dur)
+        self.t = np.delete(self.t,self.mask)
+        self.f = np.delete(self.f,self.mask)
+
+    def get_nexoplanet(self,pv=None,epicname=None):
+        if pv is None:
+            pv = self.pv_min
+        self._pl_orbper  = pv[0]
+        self._pl_tranmid = pv[1]+self.KEPLER_JD_OFFSET
+        self._pl_ratror  = pv[2]
+        self._pl_ratdor  = pv[3]
+        self._pl_orbincl = np.rad2deg(mt.acos(pv[4]/pv[3]))
+        self._pl_trandur = exoplanet_functions.calc_transit_duration(self._pl_orbper,
+                                                      self._pl_ratror,
+                                                      self._pl_ratdor,
+                                                      np.deg2rad(self._pl_orbincl))
+
+        if epicname is not None:
+            self.k2star = k2help.K2Star(epicname)
+            self.planet = self.k2star.get_nexopl()
+            self.planet._pl_tranmid = self._pl_tranmid 
+            self.planet._pl_orbper  = self._pl_orbper
+            self.planet._pl_trandur = self._pl_trandur
+            self.planet._pl_ratror  = self._pl_ratror
+            self.planet._pl_ratdor  = self._pl_ratdor
+            self.planet._pl_orbincl = self._pl_orbincl
+            self.planet._pl_orbeccen = 0.
+            self.planet._pl_trandep = self.planet._pl_ratror**2.
+            return self.planet
+        else:
+            print("pl_orbper",self._pl_orbper)
+            print("pl_tranmid",self._pl_tranmid)
+            print("pl_ratror",self._pl_ratror)
+            print("pl_ratdor",self._pl_ratdor)
+            print("pl_orbincl",self._pl_orbincl)
+            print("pl_trandur",self._pl_trandur)  
+
+    def transit_model(self, pv, time):
+        """
+        Define the transit model for a given pv vector
+
+        INPUT:
+            pv[0] - period
+            pv[1] - epoch (0)
+            pv[2] - Rp/Rs (sqrt(depth))
+            pv[3] - a/Rs (estimate from stellar density)
+            pv[4] - impact param
+        """
+        #time = self.time_fitting if time is None else time
+        #time
+        p,t0,RpRs,aRs,dur = pv
+
+        _i = mt.acos(pv[4]/pv[3])
+        return self.tm.evaluate(time, RpRs, self.limbdark, t0, p, aRs, _i,e=0.0, w=0.0, c=0.0)
+
+    def plot_lc_simple(self,pv=None,time=None,flux=None,ax=None,OFFSET=0.99):
+        if pv is None:
+            pv = self.pv_min
+        if time is None or flux is None:
+            time = self.t
+            flux = self.f
+        if ax==None:
+            fig, self.ax = plt.subplots()
+        else:
+            self.ax = ax
+        self.ax.plot(time,flux,label="Data")
+        self.ax.plot(time,flux-self.transit_model(pv,time)+OFFSET,label="Residual")
+        self.ax.plot(time,self.transit_model(pv,time),label="Best fit model")
+        self.ax.legend(loc="lower left",fontsize=9)
+
+    def plot_lc(self,pv,time=None,flux=None,ax=None,OFFSET=0.99,p_fold=None,t0_fold=None,dur_fold=0.2):
+        if time is None or flux is None:
+            time = self.t
+            flux = self.f
+        if ax==None:
+            fig, self.ax = plt.subplots()
+        else:
+            self.ax = ax
+        if p_fold is not None and t0_fold is not None:
+            time, flux = k2help.fold_transit_everest(time,flux,t0=t0_fold,period=p_fold,dur=dur_fold)
+            pv[1] = 0.
+        tt = np.linspace(time.min(),time.max(),2000)
+        self.ax.plot(time,flux,label="Data")
+        self.ax.plot(time,flux-self.transit_model(pv,time)+OFFSET,label="Residual")
+        self.ax.plot(time,self.transit_model(pv,time),label="Best fit model")
+        self.ax.legend(loc="lower left",fontsize=9)
+        self.ax.grid(lw=0.5,alpha=0.3)
+
+    def plot_lc_min(self,time=None,flux=None,ax=None,OFFSET=0.99,fold_best=True,dur_fold=0.2):
+        if fold_best:
+            p_fold=self.pv_min[0]
+            t0_fold=self.pv_min[1]
+        else:
+            p_fold=None
+            t0_fold=None
+        self.plot_lc(self.pv_min,time,flux,ax=ax,OFFSET=OFFSET,p_fold=p_fold,t0_fold=t0_fold,dur_fold=dur_fold)
+
+
+
+class K2SFFBLS(object):
+    """
+    "/Users/gks/Dropbox/mypylib/notebooks/OBS_PLANNING/epic_catalogue/DETRENDED_FROM_CLUSTER/hlsp_k2sff_k2_lightcurve_247773181-c13_kepler_v1_llc-default-aper.txt",sigma=10
+    """
+    def __init__(self,filename,epicname=None,sigma_upper=4.,sigma=7.,plot_sigma_clip=False,):
+        self.filename = filename
+        self.df = pd.read_csv(self.filename,skiprows=0)
+        self.t = self.df.ix[:,0].index.values
+        self.f = self.df.ix[:,0].values
+        self.epicname = k2help.get_epic_numbers_from_list([self.filename])[0]
+        self.sigma_clip_fluxes(sigma_upper,sigma,plot_sigma_clip=plot_sigma_clip)
+        self.EP = EPICBLSMULTI(epicname=None,time=self.t_flat,flux=self.f_flat)
+        
+    def sigma_clip_fluxes(self,sigma_upper=3.,sigma=6.,plot_sigma_clip=False):
+        self.data = astropy.stats.sigma_clipping.sigma_clip(everest.math.SavGol(self.f),sigma_upper=sigma_upper,sigma=sigma)
+        m = self.data.mask
+        self.t_flat = self.t[~m]
+        self.f_flat = everest.math.SavGol(self.f)[~m]
+        if plot_sigma_clip:
+            plt.plot(self.t,everest.math.SavGol(self.f))
+            plt.plot(self.t_flat,self.f_flat)
+
+    def __call__(self,plot_fit_panel=True,plot_folded_panel=True,use_BLS_values=False,period_range=(1.,50.),period_fit_prior=None,t0_fit_prior=None,dur=0.2):
         self.EP(period_range=period_range,nf=10000,plot=plot_fit_panel,period_fit_prior=period_fit_prior,t0_fit_prior=t0_fit_prior,dur=dur)
         self.planet = self.EP.get_nexoplanet(epicname=self.epicname)
         #if plot_folded_panel:
         #    fig, ax = plt.subplots()
-        #    ax.plot(*utils.fold_data(self.t_flat,self.f_flat,self.EP.bb._epoch,self.EP.bb._best_period),marker="o",lw=0,markersize=3,label="BLS values")
-        #    ax.plot(*utils.fold_data(self.t_flat,self.f_flat,self.EP._pl_tranmid,self.EP._pl_orbper),marker="o",lw=0,markersize=3,label="Best fit values")
+        #    ax.plot(*gkastro.fold_data(self.t_flat,self.f_flat,self.EP.bb._epoch,self.EP.bb._best_period),marker="o",lw=0,markersize=3,label="BLS values")
+        #    ax.plot(*gkastro.fold_data(self.t_flat,self.f_flat,self.EP._pl_tranmid,self.EP._pl_orbper),marker="o",lw=0,markersize=3,label="Best fit values")
         #    ax.legend(loc="lower right",fontsize=9)
         if use_BLS_values == True:
             self.planet._pl_tranmid = self.EP.bb._epoch + k2help.KEPLER_JD_OFFSET
@@ -212,7 +386,7 @@ class EVERESTBLS(object):
             print("Error in plotting info")
 
         # Everest fold - for some reason this has to be at the end
-        #self.plot_folded(dur=self.dur,ax=ax_lcoe)
+        self.plot_folded(dur=self.dur,ax=ax_lcoe)
 
         # Saving figure
         pp = PdfPages(self.savename)
@@ -230,8 +404,8 @@ class EVERESTBLS(object):
         pp.close()
         print("Saved",self.savename)
     
-    def plot_folded(self,dur=0.2):
-        self.star.plot_folded(self.planet._pl_tranmid-k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur)
+    def plot_folded(self,dur=0.2,ax=None):
+        self.star.plot_folded(self.planet._pl_tranmid-k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur,ax=ax)
 
     def get_cutout_phased_df(self,t0=None,P=None,dur=0.2,sigma=None,plot=True,use_median_filter=True):
         """
@@ -252,7 +426,7 @@ class EVERESTBLS(object):
          
         EXAMPLE:
         df = EP.get_cutout_phased_df(dur=0.4,sigma=3)
-        _, mm = astropylib.k2help.savgol_sigma_clip(df.y,win=21,sigma_upper=3)
+        _, mm = k2help.savgol_sigma_clip(df.y,win=21,sigma_upper=3)
         plt.plot(df.x, df.y,"r.")
         dfmm = df[~mm]
         t_fold_final = dfmm.x
