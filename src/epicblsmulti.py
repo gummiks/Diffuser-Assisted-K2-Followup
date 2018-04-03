@@ -95,7 +95,7 @@ class EPICBLSMULTI(object):
         pbls = pv_init[0]
         t0bls = pv_init[1]
 
-        self.tm = MA(supersampling=30., nthr=1) 
+        self.tm = MA(supersampling=30, nthr=1) 
         #self.time_fitting = self.t#self.df_folded.time
         #self.flux_fitting = self.f#self.df_folded.flux
 
