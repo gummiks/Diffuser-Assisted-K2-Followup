@@ -15,7 +15,6 @@ import numpy as np
 from astropy import constants as aconst
 import datetime
 import matplotlib.pyplot as plt
-import gklib as gk
 import math
 import os
 
@@ -260,56 +259,6 @@ def weighted_average(group, avg_name, weight_name):
         return d.mean()
 
 
-def get_johnson_filter_plots(filters,plot=True):
-    """
-    A function to get the effective wavelength of a Johnson filter, and the effective bandpass. Can plot if plot==True.
-    
-    INPUT:
-        filters = ["U","B","V","R","I"]
-        
-    RETURNS:
-        effective_data, a Pandas dataframe defined as:
-            > pd.DataFrame(zip(filters,wavg,effWave),columns=["filter","wavg","bandpass"])
-    EXAMPLE:
-        get_johnson_filter_plots(["U","B","V","R","I"],plot=True)
-        gkastro.get_johnson_filter_plots(["U","B","V","R","I"],plot=True)
-    """
-    filter_data = [get_johnson_filter(myfilt) for myfilt in filters]
-    wavg = [weighted_average(data,"wavelength","transmission") for data in filter_data]
-    effWave = [np.trapz(data["transmission"],data["wavelength"]) for data in filter_data]
-    cc = ["purple","blue","green","red","darkred"]
-    cc = dict(zip(filters,cc))
-    
-    if plot == True:
-        fig, ax = plt.subplots()
-        # plot bandpasses
-        for i in range(len(filters)):
-            # labelstring
-            labelstr = "Johnson "+filters[i]+"\nMean: "+gk.num2str(wavg[i],1)+" A\nBandpass: "+gk.num2str(effWave[i],1)+" A"
-
-            # data
-            ax.plot(filter_data[i]["wavelength"],filter_data[i]["transmission"],label=labelstr,lw=1,color=cc[filters[i]])
-
-            # effective wavelength
-            ax.axvline(x=wavg[i],ymin=0,ymax=1,lw=1,ls="--",alpha=0.3,color=cc[filters[i]])
-
-            # plot bandpasses
-            xmin = wavg[i]-effWave[i]/2.
-            xmax = wavg[i]+effWave[i]/2.
-            x = np.linspace(xmin,xmax,100)
-            ax.plot(x,np.zeros(100)-0.01*i,lw=1.5,ls="-",alpha=0.7,color=cc[filters[i]])
-
-        ax.legend(fontsize="x-large",bbox_to_anchor=(1.45, 1.0),fancybox=True,labelspacing=1.5)
-        ax.grid()
-
-        ax.margins(0.1,0.1)
-        ax.set_xlabel("Wavelength (A)")
-        ax.set_ylabel("Transmission")
-        ax.set_title("Johnson Filters",y=1.05)
-        ax.margins(0.3,0.05)
-    
-    effective_data = pd.DataFrame(zip(filters,wavg,effWave),columns=["filter","wavg","bandpass"])
-    return effective_data
 
 def airmass(alt):
     """
