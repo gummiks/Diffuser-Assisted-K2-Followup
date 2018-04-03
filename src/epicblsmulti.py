@@ -14,7 +14,7 @@ import blsMOD
 import exoplanet_functions
 from matplotlib.gridspec import GridSpec
 
-import astropylib.epicblsmulti
+#import astropylib.epicblsmulti
 import k2help
 import astropy
 import everest
@@ -255,7 +255,7 @@ class K2SFFBLS(object):
         #    ax.plot(*utils.fold_data(self.t_flat,self.f_flat,self.EP._pl_tranmid,self.EP._pl_orbper),marker="o",lw=0,markersize=3,label="Best fit values")
         #    ax.legend(loc="lower right",fontsize=9)
         if use_BLS_values == True:
-            self.planet._pl_tranmid = self.EP.bb._epoch + astropylib.k2help.KEPLER_JD_OFFSET
+            self.planet._pl_tranmid = self.EP.bb._epoch + k2help.KEPLER_JD_OFFSET
             self.planet._pl_orbper  = self.EP.bb._best_period
         return self.planet
 
@@ -325,7 +325,7 @@ class EVERESTBLS(object):
         self.EP(period_range=period_range,nf=10000,plot=plot_fit_panel,period_fit_prior=period_fit_prior,t0_fit_prior=t0_fit_prior,dur=dur)
         self.planet = self.EP.get_nexoplanet(epicname=self.epicname)
         if use_BLS_values == True:
-            self.planet._pl_tranmid = self.EP.bb._epoch + astropylib.k2help.KEPLER_JD_OFFSET
+            self.planet._pl_tranmid = self.EP.bb._epoch + k2help.KEPLER_JD_OFFSET
             self.planet._pl_orbper  = self.EP.bb._best_period
         self.plot_folded(dur=dur)
         return self.planet
@@ -406,7 +406,7 @@ class EVERESTBLS(object):
         print("Saved",self.savename)
     
     def plot_folded(self,dur=0.2,ax=None):
-        self.star.plot_folded(self.planet._pl_tranmid-astropylib.k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur,ax=ax)
+        self.star.plot_folded(self.planet._pl_tranmid-k2help.KEPLER_JD_OFFSET,self.planet._pl_orbper,dur=dur,ax=ax)
 
     def get_cutout_phased_df(self,t0=None,P=None,dur=0.2,sigma=None,plot=True,use_median_filter=True):
         """
@@ -439,7 +439,7 @@ class EVERESTBLS(object):
         plt.plot(dfmm.x,dfmm.y,"k.")
         """
         if t0 is None and P is None:
-            t0 = self.planet._pl_tranmid - astropylib.k2help.KEPLER_JD_OFFSET
+            t0 = self.planet._pl_tranmid - k2help.KEPLER_JD_OFFSET
             P = self.planet._pl_orbper
             print("Using planet with t0=",t0,"and P=",P)
 
