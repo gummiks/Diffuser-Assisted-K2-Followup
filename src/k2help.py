@@ -6,7 +6,6 @@ import k2plr
 import nexopl
 import sys
 import pandas as pd
-#import filepath
 import astropy
 import glob
 import os
@@ -15,14 +14,13 @@ import astropy.coordinates as coord
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz
 import matplotlib.pyplot as plt
 import utils
-KEPLER_JD_OFFSET = 2454833.0
 import wget
 import os
 import glob
 import re
-
 import scipy.signal
 
+KEPLER_JD_OFFSET = 2454833.0
 
 def median_filter_and_sigma_clip_noflat(t,f,window=49,sigma_upper=15.,sigma=15.,return_mask=True,return_flat=True):
     """
@@ -88,7 +86,6 @@ def median_filter_and_sigma_clip(t,f,window=49,sigma_upper=4.,sigma=15.,return_m
     else:
         return np.delete(t,m), np.delete(f_filt,m)
 
-
 def get_epic_numbers_from_list(myarray):
     """
     Return a list of epic numbers
@@ -105,89 +102,6 @@ def make_dir(dirname,verbose=True):
         if verbose==True: print("Created folder:",dirname)
     except OSError:
         if verbose==True: print(dirname,"already exists. Skipping")
-
-class K2TPFDownload(object):
-    """
-    An object to download K2 TPF data.
-    
-    #ktwo248626002-c14_lpd-targ.fits.gz
-
-    EXAMPLE:
-    [astropylib.k2help.K2SFFDownload(epicname).download() for epicname in EPICLIST]
-    """
-    baseurl = "http://archive.stsci.edu/pub/k2/target_pixel_files/"
-    filename_begin = "ktwo"
-    filename_end   = "_lpd-targ.fits.gz"
-    s = "/"
-    extension = "*.gz"
-    
-    def __init__(self,epicname,savefolder="/Users/gks/.kplr/data/k2/target_pixel_files/",campaign="c14",verbose=True,clobber=False):
-        self.epicname    = str(epicname)
-        self.epic_dir    = self.epicname[0:4].ljust(9,"0")
-        self.epic_subdir = self.epicname[4:6].ljust(5,"0")
-        s = self.s
-        self.basename     = self.filename_begin + self.epicname + "-" + campaign + self.filename_end
-        self.webname      = self.baseurl + campaign + s + self.epic_dir + s + self.epic_subdir + s + self.basename
-        self.savefolder   = savefolder + self.epicname + s
-        self.savename     = self.savefolder + self.basename
-        try:
-            os.makedirs(self.savefolder)
-            if verbose==True: print("Created folder:",self.savefolder)
-        except OSError:
-            if verbose==True: print(self.savefolder,"already exists.")
-        print("Trying download",self.basename)
-        self.saved_files = glob.glob(self.savefolder + self.extension)
-        if clobber:
-            self.data = wget.download(self.webname,self.savename)
-            print("File downloaded",os.path.getsize(self.savename) / (1024**2.),"MB")
-        else:
-            if self.savename in self.saved_files:
-                print("File",self.basename,"already downloaded. Skipping!")
-            else:
-                self.data = wget.download(self.webname,self.savename)
-                print("File downloaded",os.path.getsize(self.savename) / (1024**2.),"MB")
-
-
-class K2SFFDownload(object):
-    """
-    An object to download K2SFF corrected data.
-
-    EXAMPLE:
-    [astropylib.k2help.K2SFFDownload(epicname).download() for epicname in EPICLIST]
-    """
-    
-    def __init__(self,epicname,savefolder="/Users/gks/Dropbox/mypylib/notebooks/OBS_PLANNING/epic_catalogue/DETRENDED_FROM_CLUSTER/",campaign="c13"):
-
-
-        if campaign=="c14":
-            self.baseurl = "http://archive.stsci.edu/hlsps/k2sff/"
-        else:
-            self.baseurl = "http://archive.stsci.edu/missions/hlsp/k2sff/"
-        self.filename_begin = "hlsp_k2sff_k2_lightcurve_"
-        self.filename_end   = "_kepler_v1_llc-default-aper.txt"
-        self.s = "/"
-        self.extension = "*.txt"
-
-        self.epicname    = str(epicname)
-        self.epic_dir    = self.epicname[0:4].ljust(9,"0")
-        self.epic_subdir = self.epicname[4:]
-        s = self.s
-        self.basename     = self.filename_begin + self.epicname + "-" + campaign + self.filename_end
-        self.webname      = self.baseurl + campaign + s + self.epic_dir + s + self.epic_subdir + s + self.basename
-        self.savefolder   = savefolder
-        self.savename     = self.savefolder + self.basename
-        self.saved_files  = glob.glob(self.savefolder + self.extension)
-    
-    def download(self,verbose=True):
-        if verbose: 
-            print("Downloading",self.basename)
-        if self.savename in self.saved_files:
-            print("File",self.basename,"already downloaded. Skipping!")
-            pass
-        else:
-            return wget.download(self.webname,self.savename)
-
-
 
 def get_k2_star(epicid):
     """
@@ -227,7 +141,6 @@ def get_epic_info(epiclist,verbose=True):
         df.set_value(i,"st_pmra",k2star.pmra)
         df.set_value(i,"st_pmdec",k2star.pmdec)
     return df
-
 
 def get_transit_epochs(time,t0,period):
     """
@@ -458,8 +371,6 @@ class EverestGK(everest.Everest):
         # OLD:
         self.time_phased = tfold[inds]
         self.flux_phased = fwhite[inds]
-
-
         
         # sigma clip
         m = astropy.stats.sigma_clipping.sigma_clip(self.flux_phased,sigma=sigma).mask
@@ -498,112 +409,6 @@ def get_epic_detrended_list(path="/storage/work/gws5257/K2Detrending/everest2/k2
     detrended = glob.glob(regex)
     epic_list = [int(filename.split(os.sep)[-1].split("_")[4][0:9]) for filename in detrended]
     return epic_list
-
-
-calebs_k2_names   = ["K2-91b","K2-87b","K2-9b"]
-calebs_epic_numbers = [201465501, 210731500, 211077024, 211817229, 211048999, 210754505, 211818569, 211490999, 211492449, 211383821, 211439059, 211336616, 201497682, 201650711, 201556134, 205064326, 205050711, 211098117, 211106187, 201555883]
-#[211048999, 211490999, 211439059, 211383821, 211336616, 210754505, 211818569, 211492449, 201497682, 201650711, 201556134, 205064326, 205050711, 211817229]
-#epic_names = [211818569, 201650711, 201556134, 205064326, 205050711, 211817229]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import k2help
-#import telescope
-#cdk = telescope.TelescopeCDK()
-#import gklib as gk
-
-#def plot_epic_candidate_panel(ename,telescope=cdk,save=True,savedir="caleb_targets_cdk24/",dur=0.1,nex=None,FOV="CDK24",planetname=""):
-#    """
-#    Plot a handy 3 panel for evaluating EPIC candidates
-#
-#
-#    INPUT:
-#    ename:
-#        #planet = nex.get_exoplanet(epicname)
-#        #planet = nex.get_exoplanet("epic"+str(ename)+"b")
-#    """
-#    if nex==None:
-#        nex = nexopl.NExSciEphem()
-#        print("Adding dfs")
-#        nex.add_dfs()
-#
-#    if planetname=="":
-#        try:
-#            planet = nex.get_exoplanet("CAND:EPIC "+str(ename)+".01")
-#        except IndexError:
-#            planet = nex.get_exoplanet("epic"+str(ename)+"b")
-#    else:
-#        planet = nex.get_exoplanet(planetname)
-#
-#    star = everestmod.EverestMOD(ename)
-#    
-#    # Define plot
-#    fig, ax = plt.subplots(ncols=3,nrows=1,figsize=(12,6))
-#    
-#    # Plot folded transit
-#    star.mask_planet(planet._pl_tranmid-2454833.0,planet._pl_orbper,dur=dur)
-#    star.compute()
-#    time, flux = star.get_folded_transit(planet._pl_tranmid-2454833.0,planet._pl_orbper,ax=ax.flat[0],dur=dur)
-#    
-#    # Get stellar parameters
-#    print("Getting stellar parameters for",ename)
-#    k2star = k2help.get_k2_star(ename)
-#    planet._st_ic = k2star.imag
-#    planet._st_rc = k2star.rmag
-#    planet._st_j  = k2star.jmag
-#    planet.plot_planet_param_table(ax=ax.flat[1],fontsize=9,linespacing=0.06)
-#    
-#    # Plot finder image
-#
-#    planet.get_finder_image(field_of_view=FOV,ax=ax.flat[2])
-#    
-#    
-#    if planet._st_ic == None:
-#        err, cad = 0.,0.
-#    else:
-#        err, cad = telescope.calc_exposure_time_for_max_counts(mag=planet._st_ic,binning=2.,diffuser_angle=0.25,
-#                                                         num_ref_stars=3.,max_adu_per_pixel=10000.,
-#                                                         read_time=5.,verbose=False)
-#    
-#    ax.flat[2].set_xlabel("Error: "+gk.num2str(err,1)+"ppm  Cadence: "+gk.num2str(cad,1)+"s")
-#    
-#    fig.tight_layout()
-#    
-#    star.plot_folded(planet._pl_tranmid-2454833.0,planet._pl_orbper,dur=dur)
-#
-#
-#    # Save
-#    if save:
-#        savename = savedir+"epicPanel_"+str(ename)+".png"
-#        fig.savefig(savename)
-#        print("Saved to",savename)
-
-
-from pytransit import MandelAgol as MA
-
-def get_transit_model(time,
-                k=0.1,
-                u=[0.4,0.1],
-                t0=0.1,
-                p=3.,
-                a=10.,
-                i=np.deg2rad(90.),
-                error_sigma=0.):
-    tm = MA(supersampling=12, nthr=1)
-    error = np.random.normal(0.,error_sigma,len(time))
-    flux =  error + tm.evaluate(t=time,k=k,u=u,t0=t0,p=p,a=a,i=i)
-    return flux
 
 def fold_transit_everest(tt,flux,t0,period,dur=0.2):
     """
@@ -655,8 +460,3 @@ def savgol_sigma_clip(x,sigma_upper=3,sigma_lower=3,sigma=7,win=23):
     data = astropy.stats.sigma_clipping.sigma_clip(x_savgol,sigma_upper=sigma_upper,sigma=sigma,sigma_lower=sigma_lower)
     m = data.mask
     return x[~m], m
-
-
-
-
-
