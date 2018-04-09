@@ -7,7 +7,7 @@ import numpy as np
 # ---------- Graphics ------------
 # matplotlib
 import seaborn as sns; sns.set()
-sns.set_context("poster",font_scale=1.2,rc={"font":"helvetica"});
+sns.set_context("poster",font_scale=0.5,rc={"font":"helvetica"});
 sns.set_style("white"); #sns.set_style("ticks")
 cp = sns.color_palette("colorblind") #sns.palplot(current_palette)
 #%matplotlib osx
@@ -78,11 +78,15 @@ class AllanVarianceMC(object):
 #gx.set_ylabel("RMS", fontsize=14)
         
     
-    def plot(self,label1="",label2="",cadence=False):
+    def plot(self,label1="",label2="",cadence=False,ax=None):
         """
         
         """
-        self.fig, self.ax = plt.subplots(figsize=(6,4))
+        if ax==None:
+            self.fig, self.ax = plt.subplots(figsize=(4,4))
+        else:
+            self.ax=ax
+            
         if cadence==False:
             self.ax.errorbar(self.binsz,self.rms,yerr=[self.rmslo,self.rmshi],fmt="k-",lw=1.8, ecolor='0.5', capsize=0,label=label1,elinewidth=1)
             self.ax.plot(self.binsz,self.stderr, color='red', ls='-', lw=2, label=label2)
@@ -95,4 +99,3 @@ class AllanVarianceMC(object):
         self.ax.set_xscale("log")
         self.ax.set_yscale("log")
         self.ax.minorticks_on()
-        return self.fig, self.ax
