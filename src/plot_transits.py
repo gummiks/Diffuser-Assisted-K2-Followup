@@ -59,4 +59,3 @@ def plot_transit_with_model(x,y,yerr,yresidual=None,xmodel=None,ymodel=None,offs
     ax.set_xlabel("BJD")
     ax.set_ylabel("Normalized flux")
     ax.grid(lw=0.5,alpha=0.5)
-    
