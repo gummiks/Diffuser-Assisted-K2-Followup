@@ -22,7 +22,7 @@ rcParams['ytick.minor.width']=1
 rcParams['ytick.minor.size']=4
 
 def plot_transit_with_model(x,y,yerr,yresidual=None,xmodel=None,ymodel=None,offset=0.99,ax=None,
-                            label_data="Data",label_model="Model",label_residual="Residual"):
+                            label_data="Data",label_model="Model",label_residual="Residual",alpha=0.7,markersize=4.):
     """
     Plot transit with a transit model, residual and errorbars
     
@@ -43,8 +43,8 @@ def plot_transit_with_model(x,y,yerr,yresidual=None,xmodel=None,ymodel=None,offs
         fig, ax = plt.subplots()
     
     # Plot Data
-    ax.errorbar(x,y,yerr,elinewidth=0.3,lw=0,alpha=0.7,marker="o",
-                barsabove=True,markersize=4,mew=1.,capsize=4.,capthick=0.5,label=label_data,color=cp[0])
+    ax.errorbar(x,y,yerr,elinewidth=0.3,lw=0,alpha=alpha,marker="o",
+                barsabove=True,markersize=markersize,mew=1.,capsize=4.,capthick=0.5,label=label_data,color=cp[0])
     
     # Plot Residual
     if yresidual is not None:
