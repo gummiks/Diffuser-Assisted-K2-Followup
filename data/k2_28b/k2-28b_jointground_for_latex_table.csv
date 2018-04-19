@@ -1,19 +1,19 @@
 ,Description,Ground,Labels
-0,Transit Midpoint,$2457931.89779_{-0.00041}^{+0.00042}$,$T_{0}$ $(\mathrm{BJD_{TDB}})$
-1,Orbital period,$2.2604455_{-0.000001}^{+0.000001}$,$P$ (days)
-2,Radius ratio,$0.0755_{-0.0028}^{+0.0046}$,$R_p/R_*$
-3,Planet radius,$2.38_{-0.25}^{+0.27}$,$R_p (R_\oplus)$
-4,Planet radius,$0.213_{-0.022}^{+0.024}$,$R_p (R_J)$
-5,Transit depth,$0.0057_{-0.00042}^{+0.00071}$,$\delta$
-6,Normalized orbital radius,$17.4_{-3.4}^{+2.2}$,$a/R_*$
-7,Semi-major axis,$0.023_{-0.0046}^{+0.0039}$,$a$ (AU)
-8,Density of star,$19.6_{-9.5}^{+8.4}$,"$\rho_{\mathrm{*,transit}}$ ($\mathrm{g/cm^{3}}$)"
-9,Transit inclination,$88.33_{-1.3}^{+0.96}$,$i$ $(^{\circ})$
-10,Impact parameter,$0.51_{-0.26}^{+0.22}$,$b$
+0,Transit Midpoint,$2457931.89781_{-0.00037}^{+0.00037}$,$T_{0}$ $(\mathrm{BJD_{TDB}})$
+1,Orbital period,$2.26044551_{-0.0000010}^{+0.0000010}$,$P$ (days)
+2,Radius ratio,$0.0798_{-0.0031}^{+0.0032}$,$R_p/R_*$
+3,Planet radius,$2.51_{-0.26}^{+0.27}$,$R_p (R_\oplus)$
+4,Planet radius,$0.224_{-0.023}^{+0.024}$,$R_p (R_J)$
+5,Transit depth,$0.00637_{-0.00049}^{+0.00053}$,$\delta$
+6,Normalized orbital radius,$13.8_{-1.6}^{+2.2}$,$a/R_*$
+7,Semi-major axis,$0.0185_{-0.0028}^{+0.0035}$,$a$ (AU)
+8,Density of star,$9.7_{-3.0}^{+5.5}$,"$\rho_{\mathrm{*,transit}}$ ($\mathrm{g/cm^{3}}$)"
+9,Transit inclination,$86.95_{-0.72}^{+0.85}$,$i$ $(^{\circ})$
+10,Impact parameter,$0.735_{-0.12}^{+0.068}$,$b$
 11,Eccentricity,$0.0_{-0.0}^{+0.0}$,$e$
 12,Argument of periastron,$0.0_{-0.0}^{+0.0}$,$\omega$ ($^{\circ}$)
-13,Equilibrium temp. (assuming $a=0.3$),$382.0_{-23.0}^{+44.0}$,$T_{\mathrm{eq}}$ (K)
-14,Insolation Flux,$14.7_{-3.2}^{+8.1}$,$S$ ($S_{\oplus}$)
-15,Transit duration,$0.0392_{-0.0011}^{+0.0020}$,$T_{14}$ (days)
-16,Ingress/egress duration,$0.0036_{-0.00083}^{+0.0024}$,$\tau$ (days)
-17,Time of secondary eclipse,$2457933.02801_{-0.00041}^{+0.00042}$,$T_{S}$ $(\mathrm{BJD_{TDB}})$
+13,Equilibrium temp. (assuming $a=0.3$),$428.0_{-32.0}^{+29.0}$,$T_{\mathrm{eq}}$ (K)
+14,Insolation Flux,$23.3_{-6.1}^{+7.0}$,$S$ ($S_{\oplus}$)
+15,Transit duration,$0.0413_{-0.0016}^{+0.0017}$,$T_{14}$ (days)
+16,Ingress/egress duration,$0.0062_{-0.0018}^{+0.0021}$,$\tau$ (days)
+17,Time of secondary eclipse,$2457933.02803_{-0.00037}^{+0.00037}$,$T_{S}$ $(\mathrm{BJD_{TDB}})$
