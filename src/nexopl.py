@@ -1,14 +1,12 @@
 from __future__ import print_function
 import matplotlib.gridspec as gridspec
 import os
-#import obs_help
 from matplotlib.patches import Ellipse
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import re
 from astropy.time import Time
-#import airmassplot
 import batman
 import mcmc_utils
 import sys
@@ -19,8 +17,6 @@ import utils
 import astropy
 import k2help
 from astropy import units as u
-#import fov
-#import finderimage
 from scipy.stats import truncnorm 
 import corner
 import os
@@ -650,32 +646,31 @@ class NExopl(object):
 
     #    return Mmedian, Mplus, Mminus
 
-    #def predict_mass_from_radius_posterior(self,sample_size=10000,classify="No",plot=True):
-    #    """
-    #    Use Forecaster from Chen & Kipping to estimate mass from radius
+    def predict_mass_from_radius_posterior(self,sample_size=10000,classify="No",plot=True):
+        """
+        Use Forecaster from Chen & Kipping to estimate mass from radius
 
-    #    OUTPUT:
-    #        Returns the radius and mass posteriors
-    #    """
-    #    rlower = 1e-1; rupper = 1e2;
-    #    mean = self._pl_rade; std = self._pl_radeerr1
-    #    rad_norm = truncnorm.rvs( (rlower-mean)/std, (rupper-mean)/std, loc=mean, scale=std, size=sample_size)
-    #    mass_norm = mr_forecast.Rpost2M(rad_norm, unit='Earth', grid_size=1e3, classify=classify)
+        OUTPUT:
+            Returns the radius and mass posteriors
+        """
+        rlower = 1e-1; rupper = 1e2;
+        mean = self._pl_rade; std = self._pl_radeerr1
+        rad_norm = truncnorm.rvs( (rlower-mean)/std, (rupper-mean)/std, loc=mean, scale=std, size=sample_size)
+        mass_norm = mr_forecast.Rpost2M(rad_norm, unit='Earth', grid_size=1e3, classify=classify)
 
-    #    if plot:
-    #        self.fig = corner.corner(np.vstack([rad_norm,mass_norm]).T,
-    #                       labels=[r"$R_\oplus$", r"$M_\oplus$"],
-    #                       quantiles=[0.16, 0.5, 0.84],
-    #                       show_titles=True, title_kwargs={"fontsize": 12},lw=0.5,
-    #                       hist_kwargs={"lw":0.5})
+        if plot:
+            self.fig = corner.corner(np.vstack([rad_norm,mass_norm]).T,
+                           labels=[r"$R_\oplus$", r"$M_\oplus$"],
+                           quantiles=[0.16, 0.5, 0.84],
+                           show_titles=True, title_kwargs={"fontsize": 12},lw=0.5,
+                           hist_kwargs={"lw":0.5})
 
-    #    return rad_norm, mass_norm
+        return rad_norm, mass_norm
 
 
     def get_predicted_rv_semiamplitude_posteriors(self,sample_size=10000,classify="Yes",plot=True,xcord=(0.5,-0.2),ycord=(-0.2,0.5),showsuptitle=True,
                                                   ticklabelsize=11,labelsize=12):
         """
-
         INPUT:
         return_post: True
            if False, then return the a dataframe with the mean and plus minus values
@@ -693,7 +688,6 @@ class NExopl(object):
             i = 90.
         else:
             i = self._pl_orbincl
-
 
         rv_post = gkastro.rv_semiamplitude(m_1=self._st_mass,
                                           m_2=m_post,
