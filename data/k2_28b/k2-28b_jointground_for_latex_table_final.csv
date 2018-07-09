@@ -1,0 +1,19 @@
+,Description,Ground,Labels
+0,Transit Midpoint,$2457931.8978_{-0.00037}^{+0.00036}$,$T_{0}$ $(\mathrm{BJD_{TDB}})$
+1,Orbital period,$2.2604455_{-0.0000010}^{+0.0000010}$,$P$ (days)
+2,Radius ratio,$0.079_{-0.0032}^{+0.0032}$,$R_p/R_*$
+3,Planet radius,$2.48_{-0.26}^{+0.26}$,$R_p (R_\oplus)$
+4,Planet radius,$0.221_{-0.023}^{+0.024}$,$R_p (R_J)$
+5,Transit depth,$0.00625_{-0.00050}^{+0.00052}$,$\delta$
+6,Normalized orbital radius,$14.2_{-1.7}^{+2.4}$,$a/R_*$
+7,Semi-major axis,$0.0191_{-0.0029}^{+0.0037}$,$a$ (AU)
+8,Density of star,$10.7_{-3.4}^{+6.4}$,"$\rho_{\mathrm{*,transit}}$ ($\mathrm{g/cm^{3}}$)"
+9,Transit inclination,$87.1_{-0.74}^{+0.90}$,$i$ $(^{\circ})$
+10,Impact parameter,$0.72_{-0.14}^{+0.075}$,$b$
+11,Eccentricity,$0.0_{-0.0}^{+0.0}$,$e$
+12,Argument of periastron,$0.0_{-0.0}^{+0.0}$,$\omega$ ($^{\circ}$)
+13,Equilibrium temp. (assuming $a=0.3$),$421.0_{-32.0}^{+29.0}$,$T_{\mathrm{eq}}$ (K)
+14,Insolation Flux,$21.9_{-6.0}^{+6.8}$,$S$ ($S_{\oplus}$)
+15,Transit duration,$0.0407_{-0.0016}^{+0.0017}$,$T_{14}$ (days)
+16,Ingress/egress duration,$0.0058_{-0.0018}^{+0.0021}$,$\tau$ (days)
+17,Time of secondary eclipse,$2457933.02802_{-0.00037}^{+0.00036}$,$T_{S}$ $(\mathrm{BJD_{TDB}})$

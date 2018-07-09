@@ -94,7 +94,10 @@ def plot_transit_ephemeris_error_comparison(P_1,
                                             P_2_err2,
                                             TC_2_err1,
                                             TC_2_err2,
-                                            start="2014-11-18 18:00:00",stop="2020-06-01 00:00:00",ax=None):
+                                            start="2014-11-18 18:00:00",
+                                            stop="2020-06-01 00:00:00",
+                                            ax=None,
+                                            plot=True):
     """
     A function to plot a comparison transit ephemeris plot. 
     Ephemeris 1 (P1 and TC1) is the older, less constrained ephemeris.
@@ -173,28 +176,31 @@ def plot_transit_ephemeris_error_comparison(P_1,
                                                   TC_err1=TC_2_err1,
                                                   TC_err2=TC_2_err2)
     # Plotting
-    if ax is None:
-        fig, ax = plt.subplots()
+    if plot:
+        if ax is None:
+            fig, ax = plt.subplots()
         
     # df_com is the earlier, less constrained ephemeris
     df_com = df1
     df_com['ephemeris_drift'] = (df_com.TC.values-df2.TC.values)*DAY_TO_MIN
     df_com['ephemeris_drift_err1'] = df_com['ephemeris_drift'] + df_com.TC_err1*DAY_TO_MIN
     df_com['ephemeris_drift_err2'] = df_com['ephemeris_drift'] - df_com.TC_err2*DAY_TO_MIN        
-    ax.fill_between(df_com.index,df_com['ephemeris_drift_err1'],df_com['ephemeris_drift_err2'],alpha=0.2,color=cp[0])
-    ax.plot(df_com.index,df_com['ephemeris_drift'],color=cp[0],alpha=0.8,ls='--',lw=1)
+    if plot:
+        ax.fill_between(df_com.index,df_com['ephemeris_drift_err1'],df_com['ephemeris_drift_err2'],alpha=0.2,color=cp[0])
+        ax.plot(df_com.index,df_com['ephemeris_drift'],color=cp[0],alpha=0.8,ls='--',lw=1)
     
     # df_ref is the better constrained ephemeris
     df_ref = df2[df2.transit_number>=0]
     df_ref['ephemeris_drift'] = df_ref.TC.values-df_ref.TC.values
     df_ref['ephemeris_drift_err1'] = df_ref.TC_err1.values*DAY_TO_MIN
     df_ref['ephemeris_drift_err2'] = -1*df_ref.TC_err2.values*DAY_TO_MIN
-    ax.plot(df_ref.index,df_ref['ephemeris_drift'],color='crimson',ls='--',lw=1)
-    ax.fill_between(df_ref.index,df_ref['ephemeris_drift_err1'],df_ref['ephemeris_drift_err2'],
-                    alpha=0.5,color='crimson',zorder=1)
+    if plot:
+        ax.plot(df_ref.index,df_ref['ephemeris_drift'],color=cp[1],ls='--',lw=1)
+        ax.fill_between(df_ref.index,df_ref['ephemeris_drift_err1'],df_ref['ephemeris_drift_err2'],
+                        alpha=0.5,color=cp[1],zorder=1)
     
-    ax.grid(lw=0.5,alpha=0.5)
-    ax.minorticks_on()
-    ax.set_xlabel('Date [UT]')
-    ax.set_ylabel('Midpoint Error [min]')
+        ax.grid(lw=0.5,alpha=0.5)
+        ax.minorticks_on()
+        ax.set_xlabel('Date [UT]')
+        ax.set_ylabel('Midpoint Error [min]')
     return df_ref, df_com
