@@ -11,7 +11,7 @@ Code to generate the plots and analysis in Stefansson and Li et al. 2018 (submit
 
 # Plots from the paper
 
-### Figure 1: Transits of K2-28b and K2-100b
+## Figure 1: Transits of K2-28b and K2-100b
 Transits of a) K2-28b and b) K2-100b. 
 
 - Top panels: Best-fit phase-folded transits of the \textit{K2} data analyzed in this work. 
@@ -20,16 +20,16 @@ Transits of a) K2-28b and b) K2-100b.
 
 ![Transits](figures/f01.png "")
 
-### Figure 2: Ephemeris update of K2-28b and K2-100b
+## Figure 2: Ephemeris update of K2-28b and K2-100b
 Updated ephemerides for a) K2-28b and b) K2-100b. The shaded blue regions show the ephemerides derived from the K2-only fits in this work, and the green-shaded regions show the ephemerides derived from our joint K2 and ground-based fits. A nominal beginning of the JWST-era is shown in the gray-shaded area, assuming a launch date of March 30th, 2021. Additionally shown for K2-28b (left panel) are midpoints derived from Hirano et al. 2016 (orange and red points), along with a comparison to the Chen et al. 2018 K2+Spitzer ephemeris. Our joint models demonstrate an order of magnitude increase in our transit timing precision from our fits using K2 data alone.
 
 ![Ephemeris](figures/f02.png "")
 
-### Figure 3: The emerging picture of K2-28b´s transmission spectrum
+## Figure 3: The emerging picture of K2-28b´s transmission spectrum
 
 ![Transmission](figures/f03.png "")
 
-### Figure 4: Expected masses and radial-velocity semiamplitudes of K2-28b and K2-100b
+## Figure 4: Expected masses and radial-velocity semiamplitudes of K2-28b and K2-100b
 Predicted masses and radial velocity semi-amplitudes for a) K2-28b, b) K2-100b. Masses are predicted from the best-fit radii using Forecaster package (Chen et al. 2017), and the expected RV semi-amplitude is calculated using Equation 5 in the paper, using the predicted mass and the best-fit parameters obtained from the joint-fit models in this work as inputs.
 
 ![RVs](figures/f04.png "")
