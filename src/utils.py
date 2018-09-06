@@ -31,6 +31,68 @@ sind = lambda x : np.sin(np.deg2rad(x))
 
 from astropy.coordinates import Angle
 import astropy.units as u
+import idiffuse
+
+def calculate_aij_errors(filename,refstars,r_ap,r_a1,r_a2,read_noise=6.7,dark_noise=0.,gain=1.97,verbose=True):
+    """
+    
+    EXAMPLE:
+        #r_ap = 16.#18
+        #r_a1 = 28.
+        #r_a2 = 50.#48
+        #GAIN = 1.97
+        #err_e= 6.7
+        #npix = 805.
+        #n_b = 5391.
+    """
+    df = pd.read_csv(filename,sep='\t')
+    n_pix = (r_ap**2.)*np.pi
+    n_b   = ((r_a2**2.) - (r_a1**2.))*np.pi
+        
+    # Target star
+    F_T = df['Source-Sky_T1'].values
+    sky_T = df['Sky/Pixel_T1'].values
+    N_T = idiffuse.photometry.phot_error(F_T,
+                                         n_pix,
+                                         n_b,
+                                         sky_T,
+                                         dark_noise,
+                                         read_noise,
+                                         gain)
+    
+    # Reference stars
+    keys_source = ['Source-Sky_'+i for i in refstars]
+    keys_source_err = ['Source_Error_'+i for i in refstars]
+    keys_sky = ['Sky/Pixel_'+i for i in refstars]
+    
+    F_E = df['tot_C_cnts'] = df[keys_source].sum(axis=1).values
+    
+    for i, ref in enumerate(refstars):
+        FF = df[keys_source[i]].values
+        sky = df[keys_sky[i]].values
+        df[keys_source_err[i]] = idiffuse.photometry.phot_error(FF,
+                                                                n_pix,
+                                                                n_b,
+                                                                sky,
+                                                                dark_noise,
+                                                                read_noise,
+                                                                gain)
+    # RMS 
+    df['tot_C_err'] = df[keys_source_err].pow(2.).sum(axis=1).pow(1./2)
+    df['rel_flux_T1'] = F_T/df['tot_C_cnts'].values
+    df['rel_flux_err_T1'] = df['rel_flux_T1'] * np.sqrt((N_T/F_T)**2. + \
+                                                          (df['tot_C_err'].values/df['tot_C_cnts'].values)**2.)
+    if verbose:
+        print('Assuming:')
+        print('gain: {}e/ADU'.format(gain))
+        print('read noise: {}e^2'.format(read_noise))
+        print('dark noise: {}e/s'.format(dark_noise))
+        print('r_ap: {}pix'.format(r_ap))
+        print('r_a1: {}pix'.format(r_a1))
+        print('r_a2: {}pix'.format(r_a2))
+        print('n_pix: {}pixels'.format(n_pix))
+        print('n_b: {}pixels'.format(n_b))
+    return df
 
 
 def make_dir(dirname,verbose=True):
