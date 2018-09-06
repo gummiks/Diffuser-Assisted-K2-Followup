@@ -14,7 +14,7 @@ Code to generate the plots and analysis in Stefansson and Li et al. 2018 (submit
 ## Figure 1: Transits of K2-28b and K2-100b
 Transits of a) K2-28b and b) K2-100b. 
 
-- Top panels: Best-fit phase-folded transits of the \textit{K2} data analyzed in this work. 
+- Top panels: Best-fit phase-folded transits of the K2 data analyzed in this work. 
 - Middle panels: Diffuser-assisted ground-based transits as observed with the diffuser on the ARC 3.5m Telescope at APO. The unbinned data are shown in blue with a cadence of 32s and 16s for K2-28b and K2-100b, respectively. The gray points are 5 minute bin points. Additionally shown are the mean errorbars from photon, dark, and read noise (green errorbar) and the errorbar due to scintillation (orange errorbar). The gaps in the K2-100b were due to clouds. 
 - Bottom panels: Photometric precision as a function of bin size in minutes.
 
