@@ -1,7 +1,6 @@
 # Diffuser-Assisted-K2-Followup of K2-28b and K2-100b
 
 [![DOI](https://zenodo.org/badge/127693970.svg)](https://zenodo.org/badge/latestdoi/127693970)
-[![github](https://img.shields.io/badge/GitHub-gummiks%2FDiffuser-Assisted-K2-Followup-blue.svg?style=flat)](https://github.com/gummiks/Diffuser-Assisted-K2-Followup)
 [![arxiv](http://img.shields.io/badge/arXiv-1807.04420-orange.svg?style=flat)](http://arxiv.org/abs/1807.04420)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/gummiks/Diffuser-Assisted-K2-Followup/blob/master/LICENSE.rst)
 
