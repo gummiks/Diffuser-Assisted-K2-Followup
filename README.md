@@ -1,9 +1,9 @@
 # Diffuser-Assisted-K2-Followup of K2-28b and K2-100b
 
 [![DOI](https://zenodo.org/badge/127693970.svg)](https://zenodo.org/badge/latestdoi/127693970)
-[https://img.shields.io/badge/GitHub-gummiks%2FDiffuser-Assisted-K2-Followup-blue.svg?style=flat](https://github.com/gummiks/Diffuser-Assisted-K2-Followup)
-[http://img.shields.io/badge/arXiv-1807.04420-orange.svg?style=flat](http://arxiv.org/abs/1807.04420)
-[http://img.shields.io/badge/license-MIT-blue.svg?style=flat](https://github.com/gummiks/Diffuser-Assisted-K2-Followup/blob/master/LICENSE.rst)
+[![github](https://img.shields.io/badge/GitHub-gummiks%2FDiffuser-Assisted-K2-Followup-blue.svg?style=flat)](https://github.com/gummiks/Diffuser-Assisted-K2-Followup)
+[![arxiv](http://img.shields.io/badge/arXiv-1807.04420-orange.svg?style=flat)](http://arxiv.org/abs/1807.04420)
+[![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/gummiks/Diffuser-Assisted-K2-Followup/blob/master/LICENSE.rst)
 
 # Abstract and Summary
 Code to generate the plots and analysis in Stefansson and Li et al. 2018 (submitted), where we present two precision transit observations of the Neptune-sized planets K2-28b and K2-100b, using the Engineered Diffuser on the ARCTIC imager on the ARC 3.5m Telescope at Apache Point Observatory. 
